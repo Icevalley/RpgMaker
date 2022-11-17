@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace RpgMaker
 {
-    public class Weapon
+    public class Skill
     {
         public int Id { get; set; }
-        public string Type { get; set; }
         public string Name { get; set; }
         public int Damage { get; set; }
+        public string DmgType { get; set; }
         [JsonIgnore]
-        public List<Character> Character { get; set; }
-
+        public List<Character> Characters { get; set; }
+        
     }
 }

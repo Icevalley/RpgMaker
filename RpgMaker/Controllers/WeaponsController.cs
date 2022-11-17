@@ -47,35 +47,29 @@ namespace RpgMaker.Controllers
 
 
         [HttpPost("weapon")]
-        public async Task<ActionResult<Character>> AddWeapon(AddWeaponDto request)
-        {
-            var user = await _context.Character.FindAsync(request.CharacterId);
-            if(user == null)
-                return NotFound();
-                
-            var newWeapon = new Weapon {
+        public async Task<ActionResult<Weapon>> AddWeapon(Weapon request)
+        {       
+            var newWeapon = new Weapon 
+            {
                 Type = request.Type,
                 Name = request.Name,
                 Damage = request.Damage,
-                Character = user
             };
 
             _context.Weapon.Add(newWeapon);
-            await _context.SaveChangesAsync();
+            return Ok(await _context.SaveChangesAsync());
 
-            return user;
         }
 
         [HttpPut]
         public async Task<ActionResult<List<Weapon>>> UpdateWeapon(Weapon request)
         {
             var weapon = await _context.Weapon.FindAsync(request.Id);
-            if(weapon == null) return BadRequest("Character not found");
+            if(weapon == null) return BadRequest("Weapon not found");
 
             weapon.Name = request.Name;
             weapon.Type = request.Type;
             weapon.Damage = request.Damage;
-            weapon.CharacterId = request.CharacterId;
 
             await _context.SaveChangesAsync();
 

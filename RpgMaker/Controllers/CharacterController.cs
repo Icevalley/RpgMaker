@@ -17,13 +17,26 @@ namespace RpgMaker.Controllers
             _context = context;
 
         }
-
         [HttpGet]
+        public async Task<ActionResult<List<Character>>> Get()
+        {
+            var character = await _context.Character
+            .Include(c => c.Weapon)
+            .Include(c => c.Equipment)
+            .Include(c => c.Skills)
+            .ToListAsync();
+            
+            return character;
+        }
+
+        [HttpGet("UsersCharacters")]
         public async Task<ActionResult<List<Character>>> Get(int userId)
         {
             var character = await _context.Character
             .Where(c => c.UserId == userId)
             .Include(c => c.Weapon)
+            .Include(c => c.Equipment)
+            .Include(c => c.Skills)
             .ToListAsync();
 
             return character;

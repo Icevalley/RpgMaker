@@ -11,5 +11,6 @@ namespace RpgMaker.Data
         public DbSet<Weapon> Weapon { get; set; }
         public DbSet<Equipment> Equipment { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
+        public DbSet<Skill> Skills { get; set; }
     }
 }

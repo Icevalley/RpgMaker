@@ -15,7 +15,9 @@ namespace RpgMaker
         [JsonIgnore]
         public User User { get; set; }
         public int UserId { get; set; }
-        public Weapon Weapon { get; set; }
+        public List<Weapon> Weapon { get; set; }
+        public List<Equipment> Equipment { get; set; }
+        public List<Skill> Skills { get; set; }
         
     }
 }

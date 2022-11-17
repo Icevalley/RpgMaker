@@ -4,7 +4,7 @@
 
 namespace RpgMaker.Migrations
 {
-    public partial class WeaponEntity : Migration
+    public partial class CharacterWeaponRelation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

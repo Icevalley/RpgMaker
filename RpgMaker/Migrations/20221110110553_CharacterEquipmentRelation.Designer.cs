@@ -11,8 +11,8 @@ using RpgMaker.Data;
 namespace RpgMaker.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220923101006_WeaponEntity")]
-    partial class WeaponEntity
+    [Migration("20221110110553_CharacterEquipmentRelation")]
+    partial class CharacterEquipmentRelation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,6 +22,51 @@ namespace RpgMaker.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("CharacterEquipment", b =>
+                {
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EquipmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CharacterId", "EquipmentId");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("CharacterEquipment");
+                });
+
+            modelBuilder.Entity("CharacterSkill", b =>
+                {
+                    b.Property<int>("CharactersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CharactersId", "SkillsId");
+
+                    b.HasIndex("SkillsId");
+
+                    b.ToTable("CharacterSkill");
+                });
+
+            modelBuilder.Entity("CharacterWeapon", b =>
+                {
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeaponId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CharacterId", "WeaponId");
+
+                    b.HasIndex("WeaponId");
+
+                    b.ToTable("CharacterWeapon");
+                });
 
             modelBuilder.Entity("RpgMaker.Character", b =>
                 {
@@ -61,6 +106,9 @@ namespace RpgMaker.Migrations
                     b.Property<int>("Durability")
                         .HasColumnType("int");
 
+                    b.Property<string>("Material")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
@@ -90,6 +138,28 @@ namespace RpgMaker.Migrations
                     b.ToTable("Inventory");
                 });
 
+            modelBuilder.Entity("RpgMaker.Skill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Damage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DmgType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Skills");
+                });
+
             modelBuilder.Entity("RpgMaker.User", b =>
                 {
                     b.Property<int>("Id")
@@ -114,9 +184,6 @@ namespace RpgMaker.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Damage")
                         .HasColumnType("int");
 
@@ -128,10 +195,52 @@ namespace RpgMaker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterId")
-                        .IsUnique();
-
                     b.ToTable("Weapon");
+                });
+
+            modelBuilder.Entity("CharacterEquipment", b =>
+                {
+                    b.HasOne("RpgMaker.Character", null)
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RpgMaker.Equipment", null)
+                        .WithMany()
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CharacterSkill", b =>
+                {
+                    b.HasOne("RpgMaker.Character", null)
+                        .WithMany()
+                        .HasForeignKey("CharactersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RpgMaker.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CharacterWeapon", b =>
+                {
+                    b.HasOne("RpgMaker.Character", null)
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RpgMaker.Weapon", null)
+                        .WithMany()
+                        .HasForeignKey("WeaponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RpgMaker.Character", b =>
@@ -154,22 +263,6 @@ namespace RpgMaker.Migrations
                         .IsRequired();
 
                     b.Navigation("Character");
-                });
-
-            modelBuilder.Entity("RpgMaker.Weapon", b =>
-                {
-                    b.HasOne("RpgMaker.Character", "Character")
-                        .WithOne("Weapon")
-                        .HasForeignKey("RpgMaker.Weapon", "CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Character");
-                });
-
-            modelBuilder.Entity("RpgMaker.Character", b =>
-                {
-                    b.Navigation("Weapon");
                 });
 
             modelBuilder.Entity("RpgMaker.User", b =>
